@@ -1,0 +1,16 @@
+version: '3.8'
+name: stream-buddy
+
+services:
+  stream-buddy:
+    pull_policy: build
+    build:
+      dockerfile: Dockerfile
+    container_name: stream-buddy
+    environment:
+      STREAM_URL: ${STREAM_URL}
+      DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}
+    env_file:
+      - .env
+    volumes:
+      - ./recordings:/recordings

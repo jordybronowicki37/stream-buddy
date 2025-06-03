@@ -27,7 +27,7 @@ if __name__ == '__main__':
     with open("setup.json", "r") as file:
         data = json.load(file)
         for record in data:
-            streamers.append(Streamer(record["name"], record["url"], record["selector"]))
+            streamers.append(Streamer(record["name"], record["url"], record["showUrl"], record["selector"]))
 
     # Start browser
     p = sync_playwright().start()

@@ -6,8 +6,9 @@ from streamer import Streamer
 
 def send_online_notification(streamer: Streamer):
     webhook_url = os.getenv('DISCORD_WEBHOOK_URL')
+    viewHereText = f"\nView here: {streamer.url}"
     requests.post(webhook_url, json={
-        'content': f'Streamer {streamer.name} is live!\nView here: {streamer.url}'
+        'content': f'Streamer {streamer.name} is live!{viewHereText if streamer.showUrl else ""}',
     })
 
 

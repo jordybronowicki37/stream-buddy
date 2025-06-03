@@ -13,9 +13,10 @@ class OnlineStatus(Enum):
 
 
 class Streamer:
-    def __init__(self, name, url, selector):
+    def __init__(self, name, url, showUrl, selector):
         self.name = name
         self.url = url
+        self.showUrl = showUrl
         self.selector = selector
         self.status = OnlineStatus.UNKNOWN
         self._just_live = False

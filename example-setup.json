@@ -3,11 +3,13 @@
   {
     "name": "MY FAVORITE STREAMER",
     "url": "https://www.twitch.tv/STREAMER",
+    "showUrl": true,
     "selector": ".tw-channel-status-text-indicator span:has-text(\"LIVE\")"
   },
   {
     "name": "ANOTHER FAVORITE STREAMER",
     "url": "https://www.stream.tv/STREAMER",
+    "showUrl": true,
     "selector": ".player-live-badge"
   }
 ]

@@ -1,0 +1,13 @@
+// Rename to setup.json
+[
+  {
+    "name": "MY FAVORITE STREAMER",
+    "url": "https://www.twitch.tv/STREAMER",
+    "selector": ".tw-channel-status-text-indicator span:has-text(\"LIVE\")"
+  },
+  {
+    "name": "ANOTHER FAVORITE STREAMER",
+    "url": "https://www.stream.tv/STREAMER",
+    "selector": ".player-live-badge"
+  }
+]

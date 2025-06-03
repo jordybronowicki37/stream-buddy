@@ -15,4 +15,4 @@ RUN pip install -r requirements.txt && \
 COPY . /app
 
 # Set default command
-CMD ["python", "main.py"]
+CMD ["python", "-u", "main.py"]

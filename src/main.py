@@ -1,11 +1,11 @@
 import json
 
 from dotenv import load_dotenv
+from playwright.sync_api import sync_playwright
 
+from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
 from streamer import Streamer
-from discord_notification import send_online_notification, send_offline_notification
-from playwright.sync_api import sync_playwright
 
 
 def check_streamers(ls: list[Streamer]):
@@ -13,10 +13,10 @@ def check_streamers(ls: list[Streamer]):
         s.check_live(page)
         if s.is_just_live():
             print(f"Streamer {s.name} is live!")
-            send_online_notification(s.name)
+            send_online_notification(s)
         elif s.is_just_offline():
             print(f"Streamer {s.name} just went offline!")
-            send_offline_notification(s.name)
+            send_offline_notification(s)
 
 
 if __name__ == '__main__':

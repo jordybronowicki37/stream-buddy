@@ -10,3 +10,5 @@ services:
       DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}
     env_file:
       - .env
+    volumes:
+      - ./setup.json:/app/setup.json

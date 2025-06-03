@@ -1,3 +1,5 @@
-recordings
 .venv
 .env
+.idea
+recordings
+setup.json

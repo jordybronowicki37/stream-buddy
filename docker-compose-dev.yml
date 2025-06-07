@@ -2,7 +2,9 @@ name: stream-buddy
 
 services:
   stream-buddy:
-    image: ghcr.io/jordybronowicki37/stream-buddy:latest
+    pull_policy: build
+    build:
+      dockerfile: Dockerfile
     container_name: stream-buddy
     environment:
       DISCORD_WEBHOOK_URL: ${DISCORD_WEBHOOK_URL}

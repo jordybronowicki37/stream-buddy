@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     # Read followed streamers data file
     streamers: list[Streamer] = []
-    with open("setup.json", "r") as file:
+    with open("data/setup.json", "r") as file:
         data = json.load(file)
         for record in data:
             streamers.append(Streamer(record["name"], record["url"], record["showUrl"], record["selector"]))

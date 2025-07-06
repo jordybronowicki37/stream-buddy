@@ -2,5 +2,4 @@
 .github
 .idea
 .venv
-recordings
-setup.json
+data

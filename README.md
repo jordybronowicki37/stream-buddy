@@ -36,6 +36,9 @@ Stream-buddy keeps track of the status of your most favorite streamers and notif
 - Handle multiple people using the bot independently and keep their followed streamers separate.
 
 # Deployment
+First you must have a `/data` folder in which the app can read and write all it's data. In this folder you initially 
+need to provide the `setup.json` file. Use the `example-setup.json` file as a template.
+
 ## With Docker compose
 With the [docker-compose.yml](./docker-compose.yml) file locally available. \
 Create a `.env` file in the same directory as the `docker-compose` file and set the `DISCORD_WEBHOOK_URL` value. \
@@ -53,14 +56,14 @@ sudo docker compose -f docker-compose-dev.yml up -d
 
 ## With Docker run
 Change `YOUR_WEBHOOK_URL` with the webhook that you created in Discord. \
-Also you can change `./setup.json` to the actual path of your setup file on your host machine.
+Also you can change `./data` to the actual path of your setup file on your host machine.
 
 Create the container:
 ```shell
-sudo docker run --name stream-buddy -e DISCORD_WEBHOOK_URL=YOUR_WEBHOOK_URL -v ./setup.json:/app/setup.json -d $(docker pull -q ghcr.io/jordybronowicki37/stream-buddy:latest)
+sudo docker run --name stream-buddy -e DISCORD_WEBHOOK_URL=YOUR_WEBHOOK_URL -v ./data:/app/data -d $(docker pull -q ghcr.io/jordybronowicki37/stream-buddy:latest)
 ```
 
 To develop the container:
 ```shell
-sudo docker run --name stream-buddy -e DISCORD_WEBHOOK_URL=YOUR_WEBHOOK_URL -v ./setup.json:/app/setup.json -d $(docker build -q .)
+sudo docker run --name stream-buddy -e DISCORD_WEBHOOK_URL=YOUR_WEBHOOK_URL -v ./data:/app/data -d $(docker build -q .)
 ```

@@ -11,4 +11,4 @@ services:
     env_file:
       - .env
     volumes:
-      - ./setup.json:/app/setup.json
+      - ./data:/app/data

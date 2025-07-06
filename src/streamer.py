@@ -13,11 +13,14 @@ class OnlineStatus(Enum):
 
 
 class Streamer:
-    def __init__(self, name, url, showUrl, selector):
+    def __init__(self, name, url, showUrl, selector, timeout, notify_when_online, notify_when_offline):
         self.name = name
         self.url = url
         self.showUrl = showUrl
         self.selector = selector
+        self.timeout = timeout
+        self.notify_when_online = notify_when_online
+        self.notify_when_offline = notify_when_offline
         self.status = OnlineStatus.UNKNOWN
         self._just_live = False
         self._just_offline = False
@@ -40,7 +43,7 @@ class Streamer:
 
     def check_live(self, page: Page):
         # Checks if the user was seen online in the past 5 minutes
-        recently_online = self._last_positive_live_check is not None and datetime.now() - self._last_positive_live_check > timedelta(minutes=5)
+        recently_online = self._last_positive_live_check is not None and datetime.now() - self._last_positive_live_check > timedelta(minutes=self.timeout)
         last_status = self.status
         was_offline = not self.is_live()
         is_live = False
@@ -51,7 +54,7 @@ class Streamer:
 
         # Check the live status in intervals
         page.goto(self.url)
-        for i in range(20):
+        for _ in range(10):
             sleep(0.5)
             live_indicator = page.query_selector(self.selector)
             is_live = live_indicator is not None

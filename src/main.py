@@ -1,10 +1,9 @@
-import json
-
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
 from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
+from src.data_handler import get_streamers
 from streamer import Streamer
 
 
@@ -23,11 +22,7 @@ if __name__ == '__main__':
     load_dotenv()
 
     # Read followed streamers data file
-    streamers: list[Streamer] = []
-    with open("data/setup.json", "r") as file:
-        data = json.load(file)
-        for record in data:
-            streamers.append(Streamer(record["name"], record["url"], record["showUrl"], record["selector"]))
+    streamers = get_streamers()
 
     # Start browser
     p = sync_playwright().start()

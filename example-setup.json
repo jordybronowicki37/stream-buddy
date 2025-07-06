@@ -4,12 +4,18 @@
     "name": "MY FAVORITE STREAMER",
     "url": "https://www.twitch.tv/STREAMER",
     "showUrl": true,
-    "selector": ".tw-channel-status-text-indicator span:has-text(\"LIVE\")"
+    "selector": ".tw-channel-status-text-indicator span:has-text(\"LIVE\")",
+    "timeout": 5, // Wait in minutes for the streamer to come online again before marking the stream as officially ended
+    "notify_when_online": true,
+    "notify_when_offline": true
   },
   {
     "name": "ANOTHER FAVORITE STREAMER",
     "url": "https://www.stream.tv/STREAMER",
     "showUrl": true,
-    "selector": ".player-live-badge"
+    "selector": ".player-live-badge",
+    "timeout": 5,
+    "notify_when_online": true,
+    "notify_when_offline": true
   }
 ]

@@ -1,6 +1,9 @@
 import json
+from datetime import datetime
 
-from src.streamer import Streamer
+import jsonlines
+
+from streamer import Streamer
 
 
 def get_streamers() -> list[Streamer]:
@@ -20,4 +23,9 @@ def get_streamers() -> list[Streamer]:
             ))
 
     return streamers
+
+
+def add_stream_log(streamer: str, start_time: datetime, end_time: datetime):
+    with jsonlines.open(f"data/{streamer}/streams.jsonl", mode="w") as writer:
+        writer.write({"start_time": start_time, "end_time": end_time})
 

@@ -6,7 +6,7 @@ from playwright.sync_api import sync_playwright
 
 from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
-from src.data_handler import get_streamers
+from data_handler import get_streamers, add_stream_log
 from streamer import Streamer
 
 
@@ -18,6 +18,9 @@ def check_streamers(ls: list[Streamer]):
             send_online_notification(s)
         elif s.is_just_offline():
             print(f"Streamer {s.name} just went offline!")
+            stream_log = s.get_stream_log()
+            if stream_log is not None:
+                add_stream_log(s.name, stream_log.get("start_time"), stream_log.get("end_time"))
             send_offline_notification(s)
 
 

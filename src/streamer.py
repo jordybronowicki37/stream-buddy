@@ -13,17 +13,19 @@ class OnlineStatus(Enum):
 
 
 class Streamer:
-    def __init__(self, name, url, showUrl, selector, timeout, notify_when_online, notify_when_offline):
+    def __init__(self, name: str, url: str, show_url: bool, selector: str, timeout: int, notify_when_online: bool, notify_when_offline: bool):
         self.name = name
         self.url = url
-        self.showUrl = showUrl
+        self.show_url = show_url
         self.selector = selector
         self.timeout = timeout
         self.notify_when_online = notify_when_online
         self.notify_when_offline = notify_when_offline
         self.status = OnlineStatus.UNKNOWN
+
         self._just_live = False
         self._just_offline = False
+        self._online_from: datetime | None = None
         self._last_positive_live_check: datetime | None = None
 
     def is_live(self):
@@ -41,8 +43,13 @@ class Streamer:
             return True
         return False
 
+    def get_stream_log(self):
+        if self.status == OnlineStatus.OFFLINE and self._online_from is not None and self._last_positive_live_check is not None:
+            return {"start_time": self._online_from, "end_time": self._last_positive_live_check}
+        return None
+
     def check_live(self, page: Page):
-        # Checks if the user was seen online in the past 5 minutes
+        # Checks if the user was seen online in the setup timeout time
         recently_online = self._last_positive_live_check is not None and datetime.now() - self._last_positive_live_check > timedelta(minutes=self.timeout)
         last_status = self.status
         was_offline = not self.is_live()
@@ -65,6 +72,7 @@ class Streamer:
             self._last_positive_live_check = datetime.now()
             if was_offline:
                 self._just_live = True
+                self._online_from = datetime.now()
             self.status = OnlineStatus.ONLINE
         elif last_status == OnlineStatus.ONLINE:
             self.status = OnlineStatus.GRACE_PERIOD

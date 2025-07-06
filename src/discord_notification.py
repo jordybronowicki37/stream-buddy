@@ -10,7 +10,7 @@ def send_online_notification(streamer: Streamer):
     webhook_url = getenv('DISCORD_WEBHOOK_URL')
     viewHereText = f"\nView here: {streamer.url}"
     requests.post(webhook_url, json={
-        'content': f'Streamer {streamer.name} is live!{viewHereText if streamer.showUrl else ""}',
+        'content': f'Streamer {streamer.name} is live!{viewHereText if streamer.show_url else ""}',
     })
 
 

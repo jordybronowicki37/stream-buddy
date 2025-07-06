@@ -1,3 +1,6 @@
+from os import getenv
+import requests
+
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
@@ -19,12 +22,23 @@ def check_streamers(ls: list[Streamer]):
 
 
 if __name__ == '__main__':
+    print("Loading environment")
     load_dotenv()
+    webhook_url = getenv('DISCORD_WEBHOOK_URL')
+    if not webhook_url:
+        print("No webhook URL set")
+        exit(1)
+    result = requests.get(webhook_url)
+    if result.status_code != 200:
+        print("Webhook URL is not valid")
+        exit(1)
 
     # Read followed streamers data file
+    print("Retrieving streamers")
     streamers = get_streamers()
 
     # Start browser
+    print("Starting browser")
     p = sync_playwright().start()
     browser = p.chromium.launch(headless=True)
     context = browser.new_context()
@@ -32,6 +46,7 @@ if __name__ == '__main__':
 
     try:
         # Check loop
+        print("Starting application loop")
         while True:
             extend_function_runtime(60, lambda: check_streamers(streamers))
     except KeyboardInterrupt:

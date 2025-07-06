@@ -7,17 +7,17 @@ from streamer import Streamer
 def send_online_notification(streamer: Streamer):
     if not streamer.notify_when_online:
         return
-    webhook_url = getenv('DISCORD_WEBHOOK_URL')
+    webhook_url = getenv("DISCORD_WEBHOOK_URL")
     viewHereText = f"\nView here: {streamer.url}"
     requests.post(webhook_url, json={
-        'content': f'Streamer {streamer.name} is live!{viewHereText if streamer.show_url else ""}',
+        "content": f"Streamer {streamer.name} is live!{viewHereText if streamer.show_url else ''}",
     })
 
 
 def send_offline_notification(streamer: Streamer):
     if not streamer.notify_when_offline:
         return
-    webhook_url = getenv('DISCORD_WEBHOOK_URL')
+    webhook_url = getenv("DISCORD_WEBHOOK_URL")
     requests.post(webhook_url, json={
-        'content': f'Streamer {streamer.name} is offline!'
+        "content": f"Streamer {streamer.name} is offline!"
     })

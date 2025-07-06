@@ -24,10 +24,10 @@ def check_streamers(ls: list[Streamer]):
             send_offline_notification(s)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("Loading environment")
     load_dotenv()
-    webhook_url = getenv('DISCORD_WEBHOOK_URL')
+    webhook_url = getenv("DISCORD_WEBHOOK_URL")
     if not webhook_url:
         print("No webhook URL set")
         exit(1)

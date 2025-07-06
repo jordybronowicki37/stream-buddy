@@ -5,7 +5,7 @@ from scipy.ndimage import zoom
 
 # Data setup
 time_slots = [f"{h:02}:{m:02}" for h in range(24) for m in [0, 30]]
-days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 streamer = "Streamer Name"
 
 np.random.seed(0)
@@ -28,16 +28,16 @@ custom_cmap = LinearSegmentedColormap.from_list("custom_heatmap", colors)
 
 # --- Plot ---
 plt.figure(figsize=(20, 6))
-plt.imshow(interpolated_data, aspect='auto', cmap=custom_cmap, interpolation='none')
+plt.imshow(interpolated_data, aspect="auto", cmap=custom_cmap, interpolation="none")
 
 # Black background, white text
-plt.gca().set_facecolor('#121214')
-plt.gcf().patch.set_facecolor('#121214')
-plt.xticks(color='white')
-plt.yticks(color='white')
-plt.xlabel("Time of Day", color='white')
-plt.ylabel("Day of Week", color='white')
-plt.title(f"Streamer Probability Heatmap of {streamer}", color='white')
+plt.gca().set_facecolor("#121214")
+plt.gcf().patch.set_facecolor("#121214")
+plt.xticks(color="white")
+plt.yticks(color="white")
+plt.xlabel("Time of Day", color="white")
+plt.ylabel("Day of Week", color="white")
+plt.title(f"Streamer Probability Heatmap of {streamer}", color="white")
 
 # X ticks
 num_slots = len(time_slots)
@@ -52,12 +52,12 @@ plt.yticks(ticks=ytick_positions, labels=days)
 
 # Colorbar
 cbar = plt.colorbar()
-cbar.set_label('Chance Streamer is Online', color='white')
-cbar.ax.yaxis.set_tick_params(color='white')
-plt.setp(cbar.ax.yaxis.get_ticklabels(), color='white')
+cbar.set_label("Chance Streamer is Online", color="white")
+cbar.ax.yaxis.set_tick_params(color="white")
+plt.setp(cbar.ax.yaxis.get_ticklabels(), color="white")
 
 # Save image
 plt.tight_layout()
 plt.show()
-# plt.savefig("streamer_heatmap_custom_colors.png", dpi=300, facecolor='black')
+# plt.savefig("streamer_heatmap_custom_colors.png", dpi=300, facecolor="black")
 # plt.close()

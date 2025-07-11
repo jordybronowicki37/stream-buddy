@@ -15,4 +15,5 @@ RUN pip install -r requirements.txt && \
 COPY . /app
 
 # Set default command
-CMD ["python", "-u", "src/main.py"]
+WORKDIR /app/src
+CMD ["python", "-u", "main.py"]

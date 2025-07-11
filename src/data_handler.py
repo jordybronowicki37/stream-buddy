@@ -11,7 +11,7 @@ from streamer import Streamer
 def get_streamers() -> list[Streamer]:
     streamers: list[Streamer] = []
 
-    with open("data/setup.json", "r") as file:
+    with open("../data/setup.json", "r") as file:
         data = json.load(file)
         for record in data:
             streamers.append(Streamer(

@@ -1,7 +1,7 @@
-playwright
-python-dotenv
-requests
-numpy
-matplotlib
-scipy
-jsonlines
+playwright~=1.52.0
+python-dotenv~=1.1.0
+requests~=2.32.3
+numpy~=2.2.6
+matplotlib~=3.10.3
+scipy~=1.15.3
+jsonlines~=4.0.0

@@ -1,4 +1,3 @@
-import logging
 import sys
 from os import getenv
 import signal
@@ -10,17 +9,18 @@ from playwright.sync_api import sync_playwright, Page
 from data_handler import get_streamers, add_stream_log
 from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
+from logger import get_logger
 from streamer import Streamer
+
+logger = get_logger('main')
 
 
 def handle_sigterm(signum, frame):
     logger.info('Received signal to terminate.')
-    # TODO save streamer data before shutdown
+    # TODO: save streamer data before shutdown
     sys.exit(0)
 
 
-logger = logging.getLogger()
-logging.basicConfig(level=logging.INFO, format='%(message)s')
 signal.signal(signal.SIGTERM, handle_sigterm)
 
 

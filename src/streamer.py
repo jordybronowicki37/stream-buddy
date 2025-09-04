@@ -2,7 +2,7 @@ from enum import Enum
 from time import sleep
 from datetime import datetime, timedelta
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, TimeoutError
 
 
 class OnlineStatus(Enum):
@@ -62,7 +62,10 @@ class Streamer:
         self._just_offline = False
 
         # Check the live status in intervals
-        page.goto(self.url)
+        try:
+            page.goto(self.url)
+        except TimeoutError:
+            return
         for _ in range(10):
             sleep(0.5)
             live_indicator = page.query_selector(self.selector)

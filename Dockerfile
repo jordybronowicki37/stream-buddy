@@ -7,9 +7,9 @@ RUN apt-get update && \
 # Install dependencies
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
-RUN pip install -r requirements.txt && \
-    playwright install && \
-    playwright install-deps
+RUN pip install -r requirements.txt
+RUN playwright install
+RUN playwright install-deps
 
 # Add scripts
 COPY . /app

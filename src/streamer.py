@@ -47,7 +47,7 @@ class Streamer:
         return False
 
     def get_stream_log(self):
-        if self.status == OnlineStatus.OFFLINE and self._online_from is not None and self._last_positive_live_check is not None:
+        if self._online_from is not None and self._last_positive_live_check is not None:
             return {"start_time": self._online_from, "end_time": self._last_positive_live_check}
         return None
 
@@ -75,10 +75,12 @@ class Streamer:
 
         if is_live:
             self._last_positive_live_check = datetime.now()
-            if last_status == OnlineStatus.OFFLINE:
+            if last_status in [OnlineStatus.OFFLINE, OnlineStatus.GRACE_PERIOD_ONLINE]:
                 # Set online grace period check value if this is the first time seeing the streamer online
                 if self._last_online_grace_period_check is None:
+                    self.status = OnlineStatus.GRACE_PERIOD_ONLINE
                     self._last_online_grace_period_check = datetime.now()
+                    self._online_from = None
 
                 is_past_online_grace_period = datetime.now() - self._last_online_grace_period_check > timedelta(minutes=self.online_grace_period)
                 if is_past_online_grace_period:

@@ -10,14 +10,20 @@ from data_handler import get_streamers, add_stream_log
 from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
 from logger import get_logger
-from streamer import Streamer
+from streamer import Streamer, OnlineStatus
 
 logger = get_logger('main')
+streamers: list[Streamer] = []
 
 
 def handle_sigterm(signum, frame):
     logger.info('Received signal to terminate.')
-    # TODO: save streamer data before shutdown
+    for streamer in streamers:
+        if streamer.status == OnlineStatus.OFFLINE:
+            continue
+        stream_log = streamer.get_stream_log()
+        if stream_log is not None:
+            add_stream_log(streamer.name, stream_log.get("start_time"), stream_log.get("end_time"))
     sys.exit(0)
 
 
@@ -52,6 +58,7 @@ def check_streamers(page: Page, ls: list[Streamer]):
 
 
 def start_browser():
+    global streamers
     logger.info("Starting browser")
     p = sync_playwright().start()
     browser = p.chromium.launch(headless=True)

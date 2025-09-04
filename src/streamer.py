@@ -8,36 +8,39 @@ from playwright.sync_api import Page
 class OnlineStatus(Enum):
     UNKNOWN = 0
     OFFLINE = 1
-    GRACE_PERIOD = 2
-    ONLINE = 3
+    GRACE_PERIOD_OFFLINE = 2
+    GRACE_PERIOD_ONLINE = 3
+    ONLINE = 4
 
 
 class Streamer:
-    def __init__(self, name: str, url: str, show_url: bool, selector: str, timeout: int, notify_when_online: bool, notify_when_offline: bool):
-        self.name = name
-        self.url = url
-        self.show_url = show_url
-        self.selector = selector
-        self.timeout = timeout
-        self.notify_when_online = notify_when_online
-        self.notify_when_offline = notify_when_offline
+    def __init__(self, data_object: dict):
+        self.name = data_object["name"]
+        self.url = data_object["url"]
+        self.show_url = data_object["show_url"]
+        self.selector = data_object["selector"]
+        self.online_grace_period = data_object["online_grace_period"]
+        self.offline_grace_period = data_object["offline_grace_period"]
+        self.notify_when_online = data_object["notify_when_online"]
+        self.notify_when_offline = data_object["notify_when_offline"]
         self.status = OnlineStatus.UNKNOWN
 
         self._just_live = False
         self._just_offline = False
         self._online_from: datetime | None = None
         self._last_positive_live_check: datetime | None = None
+        self._last_online_grace_period_check: datetime | None = None
 
-    def is_live(self):
-        return self.status == OnlineStatus.ONLINE or self.status == OnlineStatus.GRACE_PERIOD
+    def is_live(self) -> bool:
+        return self.status in [OnlineStatus.ONLINE, OnlineStatus.GRACE_PERIOD_OFFLINE]
 
-    def is_just_live(self):
+    def is_just_live(self) -> bool:
         if self._just_live:
             self._just_live = False
             return True
         return False
 
-    def is_just_offline(self):
+    def is_just_offline(self) -> bool:
         if self._just_offline:
             self._just_offline = False
             return True
@@ -49,10 +52,9 @@ class Streamer:
         return None
 
     def check_live(self, page: Page):
-        # Checks if the user was seen online in the setup timeout time
-        recently_online = self._last_positive_live_check is not None and datetime.now() - self._last_positive_live_check > timedelta(minutes=self.timeout)
+        # Checks if the user was seen online in the set offline grace period time
+        recently_online = self._last_positive_live_check is not None and datetime.now() - self._last_positive_live_check > timedelta(minutes=self.offline_grace_period)
         last_status = self.status
-        was_offline = not self.is_live()
         is_live = False
 
         # Reset recent change values
@@ -70,12 +72,21 @@ class Streamer:
 
         if is_live:
             self._last_positive_live_check = datetime.now()
-            if was_offline:
-                self._just_live = True
-                self._online_from = datetime.now()
-            self.status = OnlineStatus.ONLINE
+            if last_status == OnlineStatus.OFFLINE:
+                # Set online grace period check value if this is the first time seeing the streamer online
+                if self._last_online_grace_period_check is None:
+                    self._last_online_grace_period_check = datetime.now()
+
+                is_past_online_grace_period = datetime.now() - self._last_online_grace_period_check > timedelta(minutes=self.online_grace_period)
+                if is_past_online_grace_period:
+                    self._just_live = True
+                    self._online_from = self._last_online_grace_period_check
+                    self.status = OnlineStatus.ONLINE
+                    self._last_online_grace_period_check = None
+            elif last_status == OnlineStatus.GRACE_PERIOD_OFFLINE:
+                self.status = OnlineStatus.ONLINE
         elif last_status == OnlineStatus.ONLINE:
-            self.status = OnlineStatus.GRACE_PERIOD
-        elif last_status == OnlineStatus.GRACE_PERIOD and not recently_online:
+            self.status = OnlineStatus.GRACE_PERIOD_OFFLINE
+        elif last_status == OnlineStatus.GRACE_PERIOD_OFFLINE and not recently_online:
             self._just_offline = True
             self.status = OnlineStatus.OFFLINE

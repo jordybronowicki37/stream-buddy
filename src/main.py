@@ -1,3 +1,5 @@
+import threading
+
 import sys
 from os import getenv
 import signal
@@ -6,14 +8,16 @@ import requests
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright, Page
 
-from data_handler import get_streamers, add_stream_log
+from data_handler import DataHandler
 from discord_notification import send_online_notification, send_offline_notification
 from scheduling import extend_function_runtime
 from logger import get_logger
+from discord_bot import start_discord_bot
 from streamer import Streamer, OnlineStatus
 
 logger = get_logger('main')
 streamers: list[Streamer] = []
+data_handler = DataHandler()
 
 
 def handle_sigterm(signum, frame):
@@ -23,7 +27,7 @@ def handle_sigterm(signum, frame):
             continue
         stream_log = streamer.get_stream_log()
         if stream_log is not None:
-            add_stream_log(streamer.name, stream_log.get("start_time"), stream_log.get("end_time"))
+            data_handler.add_stream_log(streamer.name, stream_log.get("start_time"), stream_log.get("end_time"))
     sys.exit(0)
 
 
@@ -53,21 +57,16 @@ def check_streamers(page: Page, ls: list[Streamer]):
             logger.info(f"Streamer {s.name} just went offline!")
             stream_log = s.get_stream_log()
             if stream_log is not None:
-                add_stream_log(s.name, stream_log.get("start_time"), stream_log.get("end_time"))
+                data_handler.add_stream_log(s.name, stream_log.get("start_time"), stream_log.get("end_time"))
             send_offline_notification(s)
 
 
 def start_browser():
-    global streamers
     logger.info("Starting browser")
     p = sync_playwright().start()
     browser = p.chromium.launch(headless=True)
     context = browser.new_context()
     page = context.new_page()
-
-    # Read followed streamers data file
-    logger.info("Retrieving streamers")
-    streamers = get_streamers()
 
     try:
         # Check loop
@@ -83,4 +82,5 @@ def start_browser():
 
 if __name__ == "__main__":
     load_environment()
-    start_browser()
+    threading.Thread(target=start_browser).start()
+    start_discord_bot()

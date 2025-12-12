@@ -63,7 +63,7 @@ class Streamer:
 
         # Check the live status in intervals
         try:
-            page.goto(self.url)
+            page.goto(self.url, timeout=10)
         except TimeoutError:
             return
         for _ in range(10):
